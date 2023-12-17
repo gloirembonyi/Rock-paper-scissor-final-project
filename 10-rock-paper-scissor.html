@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>rocker paper scissor</title>
+    <link rel="stylesheet" href="./10-rock-paper-scissor.css" />
+  </head>
+  <body>
+    <div class="project-rock-paper-sc">
+      <div class="sub-div">
+        
+        <header>
+          <div>
+            <h3>Rock paper scissors</h3>
+
+            <button
+              onclick="
+            playGame('rock');
+          "
+              class="emoji-move"
+            >
+              <img src="./images/rock-emoji.png" alt="" class="move-icon" />
+            </button>
+      
+            <button
+              onclick="
+            playGame('paper')
+          "
+              class="emoji-move"
+            >
+              <img src="./images/paper-emoji.png" alt="" class="move-icon" />
+            </button>
+      
+            <button
+              onclick="
+            playGame('scissors');
+          "
+              class="emoji-move"
+            >
+              <img src="./images/scissors-emoji.png" alt="" class="move-icon" />
+            </button>
+          </div>
+        </header>
+
+        <div class="result-container">
+
+          <div class="winer-losser">
+            <p class="js-move result-pra"></p>
+  
+            <p class="js-result win-loss"></p>
+          </div>
+
+          <div class="reset-total">
+            <h3>Number of the result</h3>
+  
+            <p class="js-score score"></p>
+      
+            <!-- reset button -->
+      
+            <button
+              onclick="
+            resetScore();
+          "
+            class="reset-button" >
+              Reset Score
+            </button>
+
+          </div>
+
+        </div>
+  
+
+      </div>
+     
+    </div>
+
+    <script src="./10-rock-paper-scissor.js"></script>
+  </body>
+</html>

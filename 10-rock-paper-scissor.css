@@ -14,7 +14,6 @@ body{
     justify-content: center;
     border-radius: 15px;
     margin: 20px;
- 
 }
 
 header{
@@ -34,7 +33,6 @@ header{
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     grid-template-rows: repeat(auto, auto);
     margin-left: 16%;  */
-
 }
 
 .winer-losser{
@@ -51,7 +49,6 @@ button.emoji-move{
     padding: 20px;
     border-radius: 50%;
     border: 2px whitesmoke solid;
-
 }
 
 .move-icon{

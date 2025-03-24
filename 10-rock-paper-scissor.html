@@ -2,84 +2,469 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>rocker paper scissor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#121212">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Rock Paper Scissors Ultimate</title>
     <link rel="stylesheet" href="./10-rock-paper-scissor.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Load Chart.js library before our game scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Then load the game script -->
+    <script src="./game-initializer.js" defer></script>
+    <script src="./game-stats.js" defer></script>
+    <script src="./10-rock-paper-scissor.js" defer></script>
+    <!-- Finally load the starter script which sets up UI interactivity -->
+    <script src="./game-starter.js" defer></script>
   </head>
   <body>
-    <div class="project-rock-paper-sc">
-      <div class="sub-div">
-        
-        <header>
-          
-          <div>
-            <h3>Rock paper scissors</h3>
-
-            <button
-              onclick="
-            playGame('rock');
-          "
-              class="emoji-move"
-            >
-              <img src="./images/rock-emoji.png" alt="" class="move-icon" />
-            </button>
-
-            
-            <button
-              onclick="
-            playGame('paper')
-          "
-              class="emoji-move"
-            >
-              <img src="./images/paper-emoji.png" alt="" class="move-icon" />
-            </button>
-      
-            <button
-              onclick="
-            playGame('scissors');
-          "
-              class="emoji-move"
-            >
-              <img src="./images/scissors-emoji.png" alt="" class="move-icon" />
-            </button>
-            
-          </div>
-        </header>
-
-        <div class="result-container">
-
-          <div class="winer-losser">
-            <p class="js-move result-pra"></p>
-  
-            <p class="js-result win-loss"></p>
-            
-          </div>
-          
-
-          <div class="reset-total">
-            <h3>Number of the result</h3>
-  
-            <p class="js-score score"></p>
-      
-            <!-- reset button -->
-      
-            <button
-              onclick="
-            resetScore();
-          "
-            class="reset-button" >
-              Reset Score
-            </button>
-
-          </div>
-
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loading-content">
+        <h1>ROCK PAPER SCISSORS</h1>
+        <p>ULTIMATE EDITION</p>
+        <div class="loading-spinner">
+          <div class="spinner"></div>
         </div>
-  
-
+        <p class="loading-text">Loading amazing 3D experience...</p>
       </div>
-     
     </div>
 
-    <script src="./10-rock-paper-scissor.js"></script>
+    <!-- Particle Background -->
+    <div id="particles-js"></div>
+
+    <div class="game-container">
+      <!-- Premium Badge -->
+      <div class="premium-badge">
+        <span>ULTIMATE</span>
+        <div class="premium-shine"></div>
+      </div>
+
+      <!-- Game Header -->
+      <header>
+        <h1>ROCK PAPER SCISSORS</h1>
+        <p class="tagline">ULTIMATE EDITION</p>
+        
+        <div class="game-mode-selector">
+          <button id="vs-computer-btn" class="mode-btn active">VS COMPUTER</button>
+          <button id="vs-player-btn" class="mode-btn">VS PLAYER</button>
+          <button id="tournament-btn" class="mode-btn premium">TOURNAMENT</button>
+          <button id="survival-btn" class="mode-btn premium">SURVIVAL</button>
+        </div>
+      </header>
+
+      <!-- Main Game Area -->
+      <main>
+        <!-- Game Status Display -->
+        <div class="game-status">
+          <div class="player-info">
+            <div class="player-avatar">
+              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=player1&backgroundColor=1bffff" alt="Player Avatar" id="player-avatar">
+              <div class="level-indicator">LVL <span id="player-level">1</span></div>
+              <div class="xp-bar">
+                <div class="xp-progress" style="width: 25%"></div>
+                <span class="xp-text">250/1000 XP</span>
+              </div>
+            </div>
+            <h2 id="player-name">YOU</h2>
+            <div id="player-score" class="score-bubble">0</div>
+            <div class="powerups-container" id="player-powerups">
+              <button class="powerup-btn" data-powerup="double" title="Double Points"><i class="fas fa-2x"></i></button>
+              <button class="powerup-btn" data-powerup="shield" title="Shield"><i class="fas fa-shield-alt"></i></button>
+              <button class="powerup-btn" data-powerup="peek" title="Peek"><i class="fas fa-eye"></i></button>
+            </div>
+          </div>
+          <div class="vs-indicator">
+            <div class="vs-text">VS</div>
+            <div class="countdown-timer" id="countdown-timer">3</div>
+          </div>
+          <div class="opponent-info">
+            <div class="player-avatar">
+              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=computer&backgroundColor=ff006c" alt="Computer Avatar" id="opponent-avatar">
+              <div class="level-indicator">LVL <span id="opponent-level">1</span></div>
+            </div>
+            <h2 id="opponent-name">COMPUTER</h2>
+            <div id="opponent-score" class="score-bubble">0</div>
+            <div class="powerups-container" id="opponent-powerups">
+              <!-- AI powerups shown here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Battle Arena -->
+        <div class="battle-arena">
+          <div class="arena-background"></div>
+          <div class="player-choice">
+            <div id="player-move-display" class="move-display">
+              <i class="fa-solid fa-question"></i>
+            </div>
+          </div>
+          <div class="result-display">
+            <div class="vs-flames">
+              <div class="flame"></div>
+              <div class="flame"></div>
+              <div class="flame"></div>
+            </div>
+            <span id="result-text">CHOOSE YOUR MOVE</span>
+            <div id="combo-counter" class="combo-counter">COMBO <span>0</span>×</div>
+          </div>
+          <div class="opponent-choice">
+            <div id="opponent-move-display" class="move-display">
+              <i class="fa-solid fa-question"></i>
+            </div>
+          </div>
+          
+          <!-- Effects container -->
+          <div id="effects-container" class="effects-container"></div>
+        </div>
+
+        <!-- Player Controls -->
+        <div class="controls-container">
+          <div class="game-controls-row">
+            <div class="difficulty-selector">
+              <label for="difficulty">Difficulty:</label>
+              <select id="difficulty">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+                <option value="impossible">Impossible</option>
+                <option value="adaptive">Adaptive AI</option>
+              </select>
+            </div>
+            
+            <div class="round-info">
+              <span>ROUND: <span id="current-round">1</span>/<span id="total-rounds">5</span></span>
+              <button id="next-round-btn" class="next-round-btn">NEXT ROUND</button>
+            </div>
+            
+            <div class="timer-container">
+              <div id="move-timer" class="move-timer">
+                <div class="timer-bar"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="move-buttons">
+            <div class="moves-container">
+              <!-- Standard moves -->
+              <button id="rock-btn" class="move-btn" data-move="rock">
+                <div class="move-3d-container">
+                  <img src="./images/rock-emoji.png" alt="Rock" class="move-icon" />
+                </div>
+                <span class="move-name">ROCK</span>
+              </button>
+              <button id="paper-btn" class="move-btn" data-move="paper">
+                <div class="move-3d-container">
+                  <img src="./images/paper-emoji.png" alt="Paper" class="move-icon" />
+                </div>
+                <span class="move-name">PAPER</span>
+              </button>
+              <button id="scissors-btn" class="move-btn" data-move="scissors">
+                <div class="move-3d-container">
+                  <img src="./images/scissors-emoji.png" alt="Scissors" class="move-icon" />
+                </div>
+                <span class="move-name">SCISSORS</span>
+            </button>
+      
+              <!-- Premium moves (locked initially) -->
+              <button id="lizard-btn" class="move-btn premium locked" data-move="lizard">
+                <div class="move-3d-container">
+                  <i class="fas fa-dragon move-icon-premium"></i>
+                </div>
+                <span class="move-name">LIZARD</span>
+                <span class="locked-badge"><i class="fas fa-lock"></i></span>
+              </button>
+              <button id="spock-btn" class="move-btn premium locked" data-move="spock">
+                <div class="move-3d-container">
+                  <i class="fas fa-hand-spock move-icon-premium"></i>
+                </div>
+                <span class="move-name">SPOCK</span>
+                <span class="locked-badge"><i class="fas fa-lock"></i></span>
+            </button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Game Stats and History -->
+      <section class="game-stats">
+        <div class="stats-header">
+          <h3>GAME STATISTICS</h3>
+          <div class="stats-controls">
+            <button id="share-stats-btn" class="share-btn"><i class="fas fa-share-alt"></i> SHARE</button>
+            <button id="reset-stats-btn">RESET STATS</button>
+          </div>
+        </div>
+        
+        <div class="stats-tabs">
+          <button class="tab-btn active" data-tab="stats">STATS</button>
+          <button class="tab-btn" data-tab="history">HISTORY</button>
+          <button class="tab-btn" data-tab="achievements">ACHIEVEMENTS</button>
+        </div>
+        
+        <div class="tab-content">
+          <div id="stats-tab" class="tab-pane active">
+            <div class="stats-display">
+              <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                <span class="stat-label">Wins:</span>
+                <span id="wins-count">0</span>
+              </div>
+              <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-skull"></i></div>
+                <span class="stat-label">Losses:</span>
+                <span id="losses-count">0</span>
+              </div>
+              <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-handshake"></i></div>
+                <span class="stat-label">Ties:</span>
+                <span id="ties-count">0</span>
+              </div>
+              <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-percentage"></i></div>
+                <span class="stat-label">Win Rate:</span>
+                <span id="win-rate">0%</span>
+              </div>
+            </div>
+            
+            <div class="advanced-stats">
+              <div class="advanced-stat-row">
+                <div class="advanced-stat">
+                  <span class="adv-stat-label">Longest Win Streak:</span>
+                  <span id="longest-streak">0</span>
+                </div>
+                <div class="advanced-stat">
+                  <span class="adv-stat-label">Current Streak:</span>
+                  <span id="current-streak">0</span>
+                </div>
+              </div>
+              <div class="advanced-stat-row">
+                <div class="advanced-stat">
+                  <span class="adv-stat-label">Highest Combo:</span>
+                  <span id="highest-combo">0</span>
+                </div>
+                <div class="advanced-stat">
+                  <span class="adv-stat-label">Powerups Used:</span>
+                  <span id="powerups-used">0</span>
+                </div>
+              </div>
+              <div class="chart-container">
+                <canvas id="moves-chart"></canvas>
+              </div>
+            </div>
+          </div>
+          
+          <div id="history-tab" class="tab-pane">
+            <div class="game-history">
+              <div id="history-list" class="history-list">
+                <!-- History items will be added here dynamically -->
+              </div>
+            </div>
+          </div>
+          
+          <div id="achievements-tab" class="tab-pane">
+            <div class="achievements-grid">
+              <div class="achievement" id="ach-first-win">
+                <div class="achievement-icon"><i class="fas fa-award"></i></div>
+                <div class="achievement-info">
+                  <h4>First Victory</h4>
+                  <p>Win your first game</p>
+                </div>
+                <div class="achievement-status locked">
+                  <i class="fas fa-lock"></i>
+                </div>
+              </div>
+              <div class="achievement" id="ach-streak">
+                <div class="achievement-icon"><i class="fas fa-fire"></i></div>
+                <div class="achievement-info">
+                  <h4>On Fire!</h4>
+                  <p>Win 5 games in a row</p>
+                </div>
+                <div class="achievement-status locked">
+                  <i class="fas fa-lock"></i>
+                </div>
+              </div>
+              <div class="achievement" id="ach-master">
+                <div class="achievement-icon"><i class="fas fa-star"></i></div>
+                <div class="achievement-info">
+                  <h4>Master Strategist</h4>
+                  <p>Win 50 games total</p>
+                </div>
+                <div class="achievement-status locked">
+                  <i class="fas fa-lock"></i>
+                </div>
+              </div>
+              <div class="achievement" id="ach-adaptive">
+                <div class="achievement-icon"><i class="fas fa-robot"></i></div>
+                <div class="achievement-info">
+                  <h4>AI Destroyer</h4>
+                  <p>Beat the Adaptive AI</p>
+                </div>
+                <div class="achievement-status locked">
+                  <i class="fas fa-lock"></i>
+                </div>
+              </div>
+              <!-- More achievements -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Progression System -->
+      <section class="progression-panel">
+        <h3>PROGRESSION</h3>
+        <div class="xp-bar-container">
+          <div class="xp-info">
+            <span>LEVEL <span id="level-display">1</span></span>
+            <span><span id="current-xp">0</span>/<span id="xp-to-level">100</span> XP</span>
+          </div>
+          <div class="xp-bar">
+            <div class="xp-progress" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="rewards-preview">
+          <div class="next-reward">
+            <h4>NEXT REWARD</h4>
+            <div class="reward-item locked" id="next-reward-display">
+              <i class="fas fa-gift"></i>
+              <span>New Move: Lizard</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Settings Panel -->
+      <div class="settings-panel">
+        <div class="settings-toggle">
+          <button id="settings-btn"><i class="fas fa-cog"></i></button>
+        </div>
+        <div class="settings-content">
+          <h3>SETTINGS</h3>
+          <div class="setting-item">
+            <label for="player-name-input">Your Name:</label>
+            <input type="text" id="player-name-input" placeholder="Enter your name">
+          </div>
+          <div class="setting-item">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="sound-toggle">Sound Effects:</label>
+              <label class="switch">
+                <input type="checkbox" id="sound-toggle" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-item">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="music-toggle">Background Music:</label>
+              <label class="switch">
+                <input type="checkbox" id="music-toggle" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-item">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="animation-toggle">Animations:</label>
+              <label class="switch">
+                <input type="checkbox" id="animation-toggle" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-item">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label for="effects-toggle">3D Effects:</label>
+              <label class="switch">
+                <input type="checkbox" id="effects-toggle" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="theme-selector">
+            <h4>Game Theme:</h4>
+            <div class="theme-buttons">
+              <button class="theme-btn active" data-theme="default">Default</button>
+              <button class="theme-btn" data-theme="dark">Dark</button>
+              <button class="theme-btn" data-theme="neon">Neon</button>
+            </div>
+          </div>
+          <div class="setting-item">
+            <button id="clear-data-btn" class="danger-btn">Reset All Data</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Challenge -->
+      <div class="daily-challenge">
+        <button id="daily-challenge-btn">
+          <i class="fas fa-calendar-day"></i>
+          <span>DAILY CHALLENGE</span>
+          <div class="notification-badge">1</div>
+            </button>
+      </div>
+
+      <!-- Level Up Modal -->
+      <div id="level-up-modal" class="modal">
+        <div class="modal-content">
+          <button class="close-modal-btn"><i class="fas fa-times"></i></button>
+          <h3>LEVEL UP!</h3>
+          <div id="level-up-reward">
+            <!-- Reward content will be dynamically inserted -->
+          </div>
+          <button id="claim-reward-btn" class="primary-btn">CLAIM REWARD</button>
+        </div>
+        </div>
+  
+      <!-- Daily Challenge Modal -->
+      <div id="daily-challenge-modal" class="modal">
+        <div class="modal-content">
+          <button class="close-modal-btn"><i class="fas fa-times"></i></button>
+          <h3>DAILY CHALLENGE</h3>
+          <h4 id="challenge-title">Win 3 times with Rock</h4>
+          <p id="challenge-description">Complete this challenge to earn XP!</p>
+          <div class="challenge-progress">
+            <div class="progress-bar">
+              <div id="challenge-progress-bar" style="width: 0%"></div>
+            </div>
+            <p id="challenge-progress-text">0/3</p>
+          </div>
+          <button id="start-challenge-btn" class="primary-btn">START CHALLENGE</button>
+        </div>
+      </div>
+     
+      <!-- Audio elements for sound effects -->
+      <audio id="move-sound" src="sounds/move.mp3" preload="auto"></audio>
+      <audio id="win-sound" src="sounds/win.mp3" preload="auto"></audio>
+      <audio id="lose-sound" src="sounds/lose.mp3" preload="auto"></audio>
+      <audio id="tie-sound" src="sounds/tie.mp3" preload="auto"></audio>
+      <audio id="powerup-sound" src="sounds/powerup.mp3" preload="auto"></audio>
+      <audio id="achievement-sound" src="sounds/achievement.mp3" preload="auto"></audio>
+      <audio id="button-click" src="sounds/click.mp3" preload="auto"></audio>
+      <audio id="bg-music" src="sounds/background.mp3" preload="auto" loop></audio>
+      <audio id="level-up" src="sounds/levelup.mp3" preload="auto"></audio>
+      <audio id="drag-sound" src="sounds/drag.mp3" preload="auto"></audio>
+      <audio id="drop-sound" src="sounds/drop.mp3" preload="auto"></audio>
+    </div>
+
+    <!-- JavaScript libraries -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <!-- Add script to remove loading screen -->
+    <script>
+      window.addEventListener('load', function() {
+        // Wait a bit to ensure all resources are loaded
+        setTimeout(function() {
+          const loadingScreen = document.getElementById('loading-screen');
+          if (loadingScreen) {
+            loadingScreen.style.opacity = '0';
+            setTimeout(function() {
+              loadingScreen.style.display = 'none';
+            }, 500);
+          }
+        }, 1500);
+      });
+    </script>
   </body>
 </html>
